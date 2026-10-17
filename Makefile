@@ -5,7 +5,13 @@ CC      ?= clang
 CFLAGS  ?= -O2 -Wall
 FW      := -framework CoreGraphics -framework CoreFoundation -framework ApplicationServices
 
-all: tools/wxwin tools/wxscroll tools/ocrfast
+all: tools/wxwin tools/wxscroll
+	@$(MAKE) --no-print-directory tools/ocrfast || \
+		echo "==> ocrfast 未编译：见 docs/troubleshooting.md；也可设置 WXEXPORT_OCR 指向现成的程序"
+
+# strict: fail the build if the OCR helper is missing (CI / release checks)
+strict: all
+	@test -x tools/ocrfast || (echo "ocrfast missing"; exit 1)
 
 tools/wxwin: tools/wxwin.c
 	$(CC) $(CFLAGS) -o $@ $< $(FW)

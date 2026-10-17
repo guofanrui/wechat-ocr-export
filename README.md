@@ -41,6 +41,9 @@ pip install -r requirements.txt
 之后的命令都在这个 venv 里跑（提示符前面会出现 `(.venv)`）；重开终端时先
 `cd wechat-ocr-export && source .venv/bin/activate`。
 
+如果 `make` 在 `ocrfast` 那一步报 Swift/SDK 版本不匹配，`wxwin`、`wxscroll` 仍然可用；
+按 [docs/troubleshooting.md](docs/troubleshooting.md) 处理，或用 `WXEXPORT_OCR` 指向现成的 OCR 程序。
+
 然后给**运行脚本的终端**（或你用的 IDE）开两个权限：
 
 - 系统设置 → 隐私与安全性 → **屏幕录制**
