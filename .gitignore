@@ -1,0 +1,16 @@
+# Personal data — never commit any of this
+shots/
+ocr/
+build/
+images/
+outputs/
+emoji_panel/
+emoji_templates/
+
+# Build products
+tools/wxwin
+tools/wxscroll
+tools/ocrfast
+*.pyc
+__pycache__/
+.DS_Store
