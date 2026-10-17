@@ -61,7 +61,12 @@ def sh(cmd: list[str], **kw) -> subprocess.CompletedProcess:
 
 def find_wechat_window() -> dict:
     res = sh([str(TOOLS / "wxwin"), "--json"])
-    windows = json.loads(res.stdout)
+    if res.returncode != 0 or not (res.stdout or "").strip():
+        raise SystemExit("找不到微信窗口：先打开微信，并点进要导出的会话")
+    try:
+        windows = json.loads(res.stdout)
+    except json.JSONDecodeError:
+        raise SystemExit("wxwin 没有返回可解析的窗口列表（可能需要屏幕录制权限）")
     best = None
     for w in windows:
         if w.get("owner") in ("微信", "WeChat") and w["w"] > 300 and w["h"] > 300:
@@ -1672,9 +1677,10 @@ def cmd_doctor(args) -> int:
     try:
         win = find_wechat_window()
         info(f"微信窗口 {win['w']}×{win['h']} @ ({win['x']:.0f},{win['y']:.0f})")
-    except SystemExit:
+    except (SystemExit, Exception) as exc:
         win = None
-        check(False, "找到微信窗口", "先打开微信，并点进要导出的会话")
+        check(False, "找到微信窗口",
+              str(exc) or "先打开微信，并点进要导出的会话")
 
     if win:
         probe = BUILD / "doctor_shot.png"
